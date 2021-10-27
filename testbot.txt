@@ -1,0 +1,17 @@
+jrcal 1+1
+
+jrcal 1+-5
+
+jrcal -1
+
+jrcal -+1
+
+jrcal (100*10)+6
+
+jrcal 100*(10+6)
+
+jrcal 2**4
+
+jrcal sqrt(16)+1
+
+jrcal 1.2345 * 10
