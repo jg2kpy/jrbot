@@ -19,6 +19,9 @@ def handle(args,user):
   if args == 'help' or args == '':
     return 'Escriba una operacion aritmetica'
 
+  if args == 'git':
+    return 'https://github.com/jg2kpy/jrbot'
+
   try:
     evaluation = safe_eval(args)
     retorno = args + ' = ' + str(evaluation)
