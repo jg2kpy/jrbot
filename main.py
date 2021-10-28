@@ -1,4 +1,15 @@
 import os, discord, ast, math, operator
+from serpapi import GoogleSearch
+
+try:
+    TOKENFILE = open('.token','r+')
+    TOKENS = TOKENFILE.readlines()
+    DISCORDTOKEN = TOKENS[0]
+    IMAGETOKEN = TOKENS[1]
+except OSError:
+    print('Error abriendo archivo')
+    DISCORDTOKEN = os.environ['TOKEN']
+    IMAGETOKEN = os.environ['IMAGES']
 
 client = discord.Client()
 
@@ -15,12 +26,21 @@ async def on_message(message):
     respuesta = handle(message.content.replace('jrcal ',''),message.author.name)
     await message.channel.send(respuesta)
 
+
 def handle(args,user):
   if args == 'help' or args == '':
     return 'Escriba una operacion aritmetica'
-
+  
   if args == 'git':
     return 'https://github.com/jg2kpy/jrbot'
+  
+  if args.startswith('-i'):
+    querry = args.replace('-i ','')
+    return querry_google_images(querry)
+  
+  if args.startswith('-e'):
+    return 'Not implemented yer'
+
 
   try:
     evaluation = safe_eval(args)
@@ -30,8 +50,20 @@ def handle(args,user):
   except Exception as ex:
     print(user + ': '+ args + ': Error')
     print(ex)
-    return 'Error'
+    return args + ': Error'
+    
 
+def querry_google_images(querry):
+  params = {
+    "q": querry,
+    "tbm": "isch",
+    "ijn": "0",
+    "api_key": IMAGETOKEN
+  }
+  search = GoogleSearch(params)
+  results = search.get_dict()
+  images_results = results['images_results']
+  return images_results[0]['original']
 
 #Funcion prestada de Stack Overflow
 def safe_eval(s):
@@ -98,12 +130,22 @@ def safe_eval(s):
     return _eval(tree)
 
 
+def solve_funtion(funtion, x, y):
+    funtion2 = funtion.replace('x',str(x))
+    funtion2 = funtion2.replace('y',str(y))
+    return safe_eval(funtion2)
 
-try:
-    TOKENFILE = open('.token','r+')
-    TOKEN = TOKENFILE.read()
-except OSError:
-    print('Error abriendo archivo')
-    TOKEN = os.environ['TOKEN']
 
-client.run(TOKEN)
+def euler(funtion,x0,y0,x,h):
+    N = abs(((x - x0)/h)) + 1
+    xn = x0
+    yn = y0
+    yn2 = yn
+    for i in range(1,int(N)):
+        xn = xn + h
+        yn2 = yn + h*solve_funtion(funtion,xn,yn)
+        yn = yn + (h/2)*(solve_funtion(funtion,xn,yn)+solve_funtion(funtion,xn,yn2))
+
+    return yn
+
+client.run(DISCORDTOKEN)
