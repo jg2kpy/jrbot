@@ -8,9 +8,9 @@
 
 Link del bot: https://discord.com/api/oauth2/authorize?client_id=902875708559360040&permissions=26688&scope=bot
 
-# Licence
+## Licence
 
-# DON'T BE A DICK PUBLIC LICENSE
+### DON'T BE A DICK PUBLIC LICENSE
 
 > Version 1.1, December 2016
 
